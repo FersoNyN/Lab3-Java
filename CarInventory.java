@@ -1,7 +1,4 @@
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class CarInventory {
     private List<Car> inventory;
@@ -17,34 +14,22 @@ public class CarInventory {
         inventory.add(car);
     }
 
-    // Method to list all cars in the inventory
-    public void listCars() {
+    // Method to list cars with sorting based on argument
+    public void listCars(String sortBy) {
         if (inventory.isEmpty()) {
             System.out.println("No cars in the inventory.");
         } else {
+            if (sortBy.equalsIgnoreCase("plate")) {
+                Collections.sort(inventory, new PlateComparator());
+            } else if (sortBy.equalsIgnoreCase("brand")) {
+                Collections.sort(inventory, new BrandComparator());
+            } else if (sortBy.equalsIgnoreCase("year")) {
+                Collections.sort(inventory, new YearComparator());
+            }
+
             for (Car car : inventory) {
                 System.out.println(car);
             }
-        }
-    }
-
-    // Method to save the inventory to a file
-    public void saveInventory(String fileName) {
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName))) {
-            out.writeObject(inventory);
-            System.out.println("Inventory saved to " + fileName);
-        } catch (IOException e) {
-            System.out.println("Error saving inventory: " + e.getMessage());
-        }
-    }
-
-    // Method to load the inventory from a file
-    public void loadInventory(String fileName) {
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
-            inventory = (List<Car>) in.readObject();
-            System.out.println("Inventory loaded from " + fileName);
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error loading inventory: " + e.getMessage());
         }
     }
 
@@ -63,8 +48,13 @@ public class CarInventory {
                 int yearOfProduction = Integer.parseInt(parts[3]);
                 carInventory.addCar(licensePlate, brand, yearOfProduction);
             } else if (parts[0].equalsIgnoreCase("list")) {
-                // Command: list
-                carInventory.listCars();
+                // Command: list [optional: plate | brand | year]
+                if (parts.length == 1) {
+                    carInventory.listCars("");  // Default order (no sorting)
+                } else {
+                    String sortBy = parts[1];
+                    carInventory.listCars(sortBy);
+                }
             } else if (parts[0].equalsIgnoreCase("save")) {
                 // Command: save <fileName>
                 String fileName = parts[1];
@@ -76,6 +66,26 @@ public class CarInventory {
             } else {
                 System.out.println("Unknown command.");
             }
+        }
+    }
+
+    // Save method as before
+    public void saveInventory(String fileName) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            out.writeObject(inventory);
+            System.out.println("Inventory saved to " + fileName);
+        } catch (IOException e) {
+            System.out.println("Error saving inventory: " + e.getMessage());
+        }
+    }
+
+    // Load method as before
+    public void loadInventory(String fileName) {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
+            inventory = (List<Car>) in.readObject();
+            System.out.println("Inventory loaded from " + fileName);
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error loading inventory: " + e.getMessage());
         }
     }
 }
