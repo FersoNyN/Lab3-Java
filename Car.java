@@ -1,8 +1,4 @@
-import java.io.Serializable;
-
-public class Car implements Serializable {
-    private static final long serialVersionUID = 1L;  // Recommended for Serializable classes
-
+public class Car {
     private String licensePlate;
     private String brand;
     private int yearOfProduction;

@@ -1,4 +1,3 @@
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -28,26 +27,6 @@ public class CarInventory {
         }
     }
 
-    // Method to save the inventory to a file
-    public void saveInventory(String fileName) {
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName))) {
-            out.writeObject(inventory);
-            System.out.println("Inventory saved to " + fileName);
-        } catch (IOException e) {
-            System.out.println("Error saving inventory: " + e.getMessage());
-        }
-    }
-
-    // Method to load the inventory from a file
-    public void loadInventory(String fileName) {
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
-            inventory = (List<Car>) in.readObject();
-            System.out.println("Inventory loaded from " + fileName);
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error loading inventory: " + e.getMessage());
-        }
-    }
-
     public static void main(String[] args) {
         CarInventory carInventory = new CarInventory();
         Scanner scanner = new Scanner(System.in);
@@ -65,14 +44,6 @@ public class CarInventory {
             } else if (parts[0].equalsIgnoreCase("list")) {
                 // Command: list
                 carInventory.listCars();
-            } else if (parts[0].equalsIgnoreCase("save")) {
-                // Command: save <fileName>
-                String fileName = parts[1];
-                carInventory.saveInventory(fileName);
-            } else if (parts[0].equalsIgnoreCase("load")) {
-                // Command: load <fileName>
-                String fileName = parts[1];
-                carInventory.loadInventory(fileName);
             } else {
                 System.out.println("Unknown command.");
             }
